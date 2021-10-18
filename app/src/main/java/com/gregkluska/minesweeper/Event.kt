@@ -13,4 +13,11 @@ sealed class Event {
         val options: Options
     ): Event()
 
+    data class Click(
+        val index: Int
+    ): Event()
+
+    data class LongClick(
+        val index: Int
+    ): Event()
 }

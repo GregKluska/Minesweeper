@@ -6,7 +6,7 @@ import kotlin.random.nextInt
 data class Game(
     val state: State = State.Welcome,
     val options: Options = Options(),
-    val flags: Set<Int>,
+    val flags: Set<Int> = setOf(),
 ) {
 
     val fields: List<Field>
