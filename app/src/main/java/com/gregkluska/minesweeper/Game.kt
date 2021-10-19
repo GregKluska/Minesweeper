@@ -27,7 +27,6 @@ data class Game(
         }
     }
 
-
     // First [options.columns] items -> first row
     private fun hasTop(index: Int): Boolean = index > options.columns
     private fun hasLeft(index: Int): Boolean = index.rem(options.columns) > 1

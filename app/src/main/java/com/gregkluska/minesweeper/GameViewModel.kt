@@ -40,7 +40,7 @@ class GameViewModel : ViewModel() {
         // Todo: State check, field check.
     }
 
-    private fun onLongClick(index:Int) {
+    private fun onLongClick(index: Int) {
         Log.d(TAG, "onLongClick: called with index = $index")
         // Todo: State check, field check.
     }
@@ -52,28 +52,38 @@ class GameViewModel : ViewModel() {
 
     private fun onStart() {
         Log.d(TAG, "onStart: called")
-        // Todo: Can the game start? State check. Can be called on welcome state only
-        dispatchState(gameState = game.copy(state = Game.State.Running))
+        if (game.state == Game.State.Welcome) {
+            dispatchState(gameState = game.copy(state = Game.State.Running))
+        }
     }
+
     private fun onReset() {
         Log.d(TAG, "onReset: called")
-        // Reset the game, but remember settings
-        dispatchState( Game(options = game.options) )
+        dispatchState(Game(options = game.options))
     }
+
     private fun onPause() {
         Log.d(TAG, "onPause: called")
         // Todo: State check. onPause can be called on running game only
-        dispatchState( game.copy(state = Game.State.Paused) )
+        if (game.state == Game.State.Running) {
+            dispatchState(game.copy(state = Game.State.Paused))
+        }
     }
+
     private fun onResume() {
         Log.d(TAG, "onResume: called")
         // Todo: State check. onResume can be called on paused game only
-        dispatchState( game.copy(state = Game.State.Running) )
+        if(game.state == Game.State.Paused) {
+            dispatchState(game.copy(state = Game.State.Running))
+        }
     }
+
     private fun onGameOver() {
         Log.d(TAG, "onGameOver: called")
         // Todo: state check. onGameOver can be called on running game only
-        dispatchState( game.copy(state = Game.State.GameOver) )
+        if(game.state == Game.State.Running) {
+            dispatchState(game.copy(state = Game.State.GameOver))
+        }
     }
 
     private fun onOptionsUpdate(options: Options) {
