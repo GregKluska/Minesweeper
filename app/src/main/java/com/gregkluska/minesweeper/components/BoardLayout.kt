@@ -1,13 +1,24 @@
 package com.gregkluska.minesweeper.components
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
 import com.gregkluska.minesweeper.Options
-import com.gregkluska.minesweeper.ui.theme.Green
-import com.gregkluska.minesweeper.ui.theme.GreenLight
+import com.gregkluska.minesweeper.ui.theme.ColorScheme
+import com.gregkluska.minesweeper.ui.theme.DarkColors
+import com.gregkluska.minesweeper.ui.theme.LightColors
 
+/**
+ * Color provider for fields
+ */
+val LocalColorScheme = compositionLocalOf<ColorScheme> { error("Missing colors") }
+
+/**
+ * Component holder
+ */
 data class BoardItem(
     val component: @Composable () -> Unit
 )
@@ -38,8 +49,30 @@ fun Board(
             var r: Int = 0
             var c: Int = 0
 
+            val isColumnEven = options.columns.rem(2) == 0
+
             fields.forEachIndexed { index, item ->
-                val minefieldPlaceables = subcompose(index, item.component).map {
+                val component: @Composable () -> Unit = {
+                    val isRowNumEven = (index.floorDiv(options.columns)).rem(2) == 0
+                    val isIndexEven = index.rem(2) == 0
+
+                    val darkLight = if (!isIndexEven) DarkColors else LightColors
+                    val lightDark = if (!isIndexEven) LightColors else DarkColors
+
+                    val color: ColorScheme =
+                        if (!isColumnEven) darkLight else if (!isRowNumEven) darkLight else lightDark
+
+                    /**
+                     * Provide color.
+                     * If the columns number is odd then in every row colors are Dark - Light - Dark..
+                     * Otherwise the order of colors needs to be changed for every next row
+                     */
+                    CompositionLocalProvider(LocalColorScheme provides color) {
+                        item.component()
+                    }
+                }
+
+                val minefieldPlaceables = subcompose(index, component).map {
                     it.measure(minefieldConstraints)
                 }
 
@@ -66,30 +99,8 @@ fun Board(
 @Preview
 @Composable
 private fun BoardPreview() {
-    val fields = mutableListOf<BoardItem>()
+    val fields = MutableList(100) { BoardItem { Field() } }
     val options = Options(columns = 10)
-
-    for(i in 0 until 100) {
-        // Todo: Think of a better way of getting colors.
-        val row = ( i.floorDiv(options.columns) )
-
-        val color1 = if(i.rem(2) > 0) Green else GreenLight
-        val color2 = if(i.rem(2) > 0) GreenLight else Green
-
-        val color = if(options.columns.rem(2)>0) color1 else if(row.rem(2) > 0) color1 else color2
-
-        fields.add (
-            BoardItem(
-                component = {
-                    Field(
-                        color = color
-                    )
-                }
-            )
-        )
-
-
-    }
 
     Board(
         options = options,
