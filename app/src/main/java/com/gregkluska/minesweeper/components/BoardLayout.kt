@@ -1,37 +1,45 @@
 package com.gregkluska.minesweeper.components
 
 import android.util.Log
-import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
+import com.gregkluska.minesweeper.Options
 import com.gregkluska.minesweeper.ui.theme.Green
 import com.gregkluska.minesweeper.ui.theme.GreenLight
 
-/**
- * Create a grid of n columns and fills it with minefields composables
- *
- * @param columns Number of columns
- * @param minefields Components to fill the grid
- */
-@Composable
-fun BoardLayout(
-    columns: Int,
-    minefields: @Composable () -> Unit,
-) {
-    if(columns < 1) {
-        Log.e("Minesweeper", "Board: Columns cannot be less than 1")
-        return
+interface BoardScope {
+    fun field(content: @Composable () -> Unit)
+}
+
+private data class BoardItem(
+    val content: @Composable () -> Unit
+)
+
+private class BoardScopeImpl : BoardScope {
+
+    val fieldsss: MutableList<BoardItem> = mutableListOf()
+
+    override fun field(content: @Composable () -> Unit) {
+        fieldsss.add(element = BoardItem(content))
     }
+
+}
+
+@Composable
+fun Board(
+    options: Options = Options(),
+    fields: BoardScope.() -> Unit
+) {
+
+    val items = BoardScopeImpl().apply { fields() }
 
     SubcomposeLayout { constraints ->
         val layoutWidth = constraints.maxWidth
         val layoutHeight = constraints.maxHeight
 
-        val columnWidth = layoutWidth / columns
+        val columnWidth = layoutWidth / options.columns
 
         /**
          * Constraints to force them to be squares
@@ -44,49 +52,58 @@ fun BoardLayout(
         )
 
         layout(layoutWidth, layoutHeight) {
-            val minefieldPlaceables = subcompose(0, minefields).map {
-                it.measure(minefieldConstraints)
-            }
-
             var r: Int = 0
             var c: Int = 0
 
-            minefieldPlaceables.map {
+            items.fieldsss.forEachIndexed { index, item ->
+                val minefieldPlaceables = subcompose(index, item.content).map {
+                    it.measure(minefieldConstraints)
+                }
 
-                it.place(
-                    x = c * columnWidth,
-                    y = r * columnWidth,
-                )
+                minefieldPlaceables.map {
+                    it.place(
+                        x = c * columnWidth,
+                        y = r * columnWidth,
+                    )
+                }
 
-                if(c+1 >= columns) {
+                if (c + 1 >= options.columns) {
                     r += 1
                     c = 0
                 } else {
                     c += 1
                 }
             }
+
         }
+
     }
 }
 
 @Preview
 @Composable
-private fun BoardLayoutPreview() {
-    val columns = 10
-    BoardLayout(columns = columns) {
-        for(i in 0 until 100) {
+private fun BoardPreview() {
 
+    val options = Options(columns = 10)
+    Board(
+        options = options
+    ) {
+        for(i in 0 until 100) {
             // Todo: Think of a better way of getting colors.
-            val row = ( i.floorDiv(columns) )
+            val row = ( i.floorDiv(options.columns) )
 
             val color1 = if(i.rem(2) > 0) Green else GreenLight
             val color2 = if(i.rem(2) > 0) GreenLight else Green
 
-            val color = if(row.rem(2) > 0) color1 else color2
+            val color = if(options.columns.rem(2)>0) color1 else if(row.rem(2) > 0) color1 else color2
 
-            Field(
-                color = color
-            )
+            field {
+                Field(
+                    color = color
+                )
+            }
+
+
         }
     }
 }
