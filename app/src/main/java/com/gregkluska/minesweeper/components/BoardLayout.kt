@@ -6,6 +6,7 @@ import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
+import com.gregkluska.minesweeper.Game
 import com.gregkluska.minesweeper.Options
 import com.gregkluska.minesweeper.ui.theme.ColorScheme
 import com.gregkluska.minesweeper.ui.theme.DarkColors
@@ -99,7 +100,7 @@ fun Board(
 @Preview
 @Composable
 private fun BoardPreview() {
-    val fields = MutableList(100) { BoardItem { Field() } }
+    val fields = MutableList(100) { BoardItem { Field( state = Game.FieldState.Close, mine = false ) } }
     val options = Options(columns = 10)
 
     Board(

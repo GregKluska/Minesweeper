@@ -20,9 +20,9 @@ data class Game(
 
         fields = List(options.rows * options.columns) { index ->
             Field(
+                state = FieldState.Close,
                 mine = index in mines,
                 adjacentMines = getAdjacentMines(index, mines),
-                flag = false
             )
         }
     }
@@ -139,10 +139,12 @@ data class Game(
     }
 
     data class Field(
+        val state: FieldState,
         val mine: Boolean,
-        val adjacentMines: Int,
-        val flag: Boolean
+        val adjacentMines: Int
     )
+
+    enum class FieldState { Open, Close, Flag }
 
     enum class State { Welcome, Running, Paused, GameOver }
 }
