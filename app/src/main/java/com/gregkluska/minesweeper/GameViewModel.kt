@@ -37,12 +37,41 @@ class GameViewModel : ViewModel() {
 
     private fun onClick(index: Int) {
         Log.d(TAG, "onClick: called with index = $index")
-        // Todo: State check, field check.
+
+        if(game.state != Game.State.Running) return
+
+        val field = game.fields[index] // IndexOutOfBoundsException
+
+        if(field.state == Game.FieldState.Close) {
+            Log.d(TAG, "Field: $field")
+
+
+            val fields = game.openField(index)
+            Log.d(TAG, "Fields: $fields")
+            dispatchState(
+                game.copy(
+                    fields = fields,
+//                    fields = game.fields.toMutableList().apply { this[0] = this[0].copy(state = Game.FieldState.Open) },
+                    state = if(field.mine) Game.State.GameOver else game.state,
+                )
+            )
+        }
     }
 
     private fun onLongClick(index: Int) {
         Log.d(TAG, "onLongClick: called with index = $index")
-        // Todo: State check, field check.
+
+        if(game.state != Game.State.Running) return
+
+        val flags = game.flags.toMutableSet()
+        flags.toggle(index)
+
+        dispatchState(
+            game.copy(
+                flags = flags
+            )
+        )
+
     }
 
     private fun onWelcome() {

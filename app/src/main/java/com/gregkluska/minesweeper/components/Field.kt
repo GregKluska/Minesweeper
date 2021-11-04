@@ -1,8 +1,10 @@
 package com.gregkluska.minesweeper.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -20,7 +22,9 @@ import com.gregkluska.minesweeper.ui.theme.GreenLight
 @Composable
 fun Field(
     state: Game.FieldState,
-    mine: Boolean
+    mine: Boolean,
+    number: Int,
+    onClick: () -> Unit = {},
 ) {
 
     val color = LocalColorScheme.current
@@ -28,8 +32,10 @@ fun Field(
     Field(
         state = state,
         mine = mine,
+        number = number,
         grassColor = color.grass,
-        dirtColor = color.dirt
+        dirtColor = color.dirt,
+        onClick = onClick
     )
 }
 
@@ -37,8 +43,10 @@ fun Field(
 private fun Field(
     state: Game.FieldState,
     mine: Boolean,
+    number: Int = 0,
     grassColor: Color,
     dirtColor: Color,
+    onClick: () -> Unit = {},
 ) {
     if(state == Game.FieldState.Open && mine) {
         // Bomb
@@ -53,7 +61,7 @@ private fun Field(
     }
 
     Surface(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().clickable(onClick = onClick),
         color = color
     ) {
         if (state == Game.FieldState.Flag) {
@@ -61,6 +69,9 @@ private fun Field(
                 painter = painterResource(id = R.drawable.flag_icon), 
                 contentDescription = stringResource(id = R.string.flag)
             )
+        }
+        if(state == Game.FieldState.Open) {
+            Text(text = "${number.toString()}")
         }
     }
 }

@@ -100,7 +100,7 @@ fun Board(
 @Preview
 @Composable
 private fun BoardPreview() {
-    val fields = MutableList(100) { BoardItem { Field( state = Game.FieldState.Close, mine = false ) } }
+    val fields = MutableList(100) { BoardItem { Field( state = Game.FieldState.Close, mine = false, number = 0 ) } }
     val options = Options(columns = 10)
 
     Board(
