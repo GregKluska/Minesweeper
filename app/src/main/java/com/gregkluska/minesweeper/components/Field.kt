@@ -71,7 +71,7 @@ private fun Field(
             )
         }
         if(state == Game.FieldState.Open) {
-            Text(text = "${number.toString()}")
+            Text(text = "${if(number == 0)"" else number.toString()}")
         }
     }
 }

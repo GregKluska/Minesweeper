@@ -30,45 +30,48 @@ class GameViewModel : ViewModel() {
             Event.Resume -> onResume()
             Event.GameOver -> onGameOver()
             is Event.OptionsUpdate -> onOptionsUpdate(event.options)
-            is Event.Click -> onClick(event.index)
-            is Event.LongClick -> onLongClick(event.index)
+            is Event.Click -> onClick(event.x, event.y)
+            is Event.LongClick -> onLongClick(event.x, event.y)
         }
     }
 
-    private fun onClick(index: Int) {
-        Log.d(TAG, "onClick: called with index = $index")
+    private fun onClick(x: Int, y: Int) {
+        Log.d(TAG, "onClick: called with x = $x, y = $y")
 
         if(game.state != Game.State.Running) return
 
-        val field = game.fields[index] // IndexOutOfBoundsException
+        val field = game.fields[y][x] // IndexOutOfBoundsException
 
         if(field.state == Game.FieldState.Close) {
             Log.d(TAG, "Field: $field")
 
 
-            val fields = game.openField(index)
+            val fields = game.openField(x, y)
             Log.d(TAG, "Fields: $fields")
             dispatchState(
                 game.copy(
                     fields = fields,
-//                    fields = game.fields.toMutableList().apply { this[0] = this[0].copy(state = Game.FieldState.Open) },
                     state = if(field.mine) Game.State.GameOver else game.state,
                 )
             )
         }
     }
 
-    private fun onLongClick(index: Int) {
-        Log.d(TAG, "onLongClick: called with index = $index")
+    private fun onLongClick(x: Int, y: Int) {
+        Log.d(TAG, "onLongClick: called with x = $x, y = $y")
 
         if(game.state != Game.State.Running) return
+        val currState = game.fields[y][x].state
+        if(currState == Game.FieldState.Open) return
 
-        val flags = game.flags.toMutableSet()
-        flags.toggle(index)
+        val nextState = if(currState == Game.FieldState.Open) Game.FieldState.Flag else Game.FieldState.Open
+
+        val fields = game._fields
+        fields[y][x] = fields[y][x].copy(state = nextState)
 
         dispatchState(
             game.copy(
-                flags = flags
+                fields = fields
             )
         )
 

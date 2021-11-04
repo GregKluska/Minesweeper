@@ -14,10 +14,12 @@ sealed class Event {
     ): Event()
 
     data class Click(
-        val index: Int
+        val x: Int,
+        val y: Int
     ): Event()
 
     data class LongClick(
-        val index: Int
+        val x: Int,
+        val y: Int
     ): Event()
 }

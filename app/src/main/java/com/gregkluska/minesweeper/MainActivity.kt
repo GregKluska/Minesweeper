@@ -40,15 +40,19 @@ class MainActivity : ComponentActivity() {
 
                 val fields: MutableList<BoardItem> = mutableListOf()
 
-                gameState.value.fields.forEachIndexed { index, field ->
-                    fields.add(index, BoardItem {
-                        Field(
-                            state = field.state,
-                            mine = field.mine,
-                            number = field.adjacentMines,
-                            onClick = { viewModel.dispatch(Event.Click(index)) }
-                        )
-                    })
+                gameState.value.fields.forEachIndexed { y, row ->
+                    row.forEachIndexed { x, field ->
+
+                        fields.add(BoardItem {
+                            Field(
+                                state = field.state,
+                                mine = field.mine,
+                                number = field.adjacentMines,
+                                onClick = { viewModel.dispatch(Event.Click(field.x, field.y)) }
+                            )
+                        })
+                    }
+
                 }
 
                 Board(
