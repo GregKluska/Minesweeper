@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">Minesweeper</string>
     <string name="flag">Flag</string>
+    <string name="clock">Clock</string>
+    <string name="volume">Volume</string>
+    <string name="muted">Muted</string>
+    <string name="settings">Settings</string>
 </resources>

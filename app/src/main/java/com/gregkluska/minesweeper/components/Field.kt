@@ -1,7 +1,8 @@
 package com.gregkluska.minesweeper.components
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -25,6 +26,7 @@ fun Field(
     mine: Boolean,
     number: Int,
     onClick: () -> Unit = {},
+    onLongClick: () -> Unit = {}
 ) {
 
     val color = LocalColorScheme.current
@@ -35,10 +37,12 @@ fun Field(
         number = number,
         grassColor = color.grass,
         dirtColor = color.dirt,
-        onClick = onClick
+        onClick = onClick,
+        onLongClick = onLongClick
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun Field(
     state: Game.FieldState,
@@ -47,6 +51,7 @@ private fun Field(
     grassColor: Color,
     dirtColor: Color,
     onClick: () -> Unit = {},
+    onLongClick: () -> Unit
 ) {
     if(state == Game.FieldState.Open && mine) {
         // Bomb
@@ -61,7 +66,13 @@ private fun Field(
     }
 
     Surface(
-        modifier = Modifier.fillMaxSize().clickable(onClick = onClick),
+        modifier = Modifier
+            .fillMaxSize()
+            .combinedClickable(
+                onClick = onClick,
+                onLongClick = onLongClick,
+                onDoubleClick = onLongClick
+            ),
         color = color
     ) {
         if (state == Game.FieldState.Flag) {
@@ -88,7 +99,9 @@ private fun FieldPreview() {
                     state = Game.FieldState.Close,
                     mine = false,
                     grassColor = Green,
-                    dirtColor = Brown
+                    dirtColor = Brown,
+                    onClick = {},
+                    onLongClick = {}
                 )
             }
             Column(
@@ -98,7 +111,9 @@ private fun FieldPreview() {
                     state = Game.FieldState.Close,
                     mine = false,
                     grassColor = GreenLight,
-                    dirtColor = BrownLight
+                    dirtColor = BrownLight,
+                    onClick = {},
+                    onLongClick = {}
                 )
             }
             Column(
@@ -108,7 +123,9 @@ private fun FieldPreview() {
                     state = Game.FieldState.Open,
                     mine = false,
                     grassColor = Green,
-                    dirtColor = Brown
+                    dirtColor = Brown,
+                    onClick = {},
+                    onLongClick = {}
                 )
             }
             Column(
@@ -118,7 +135,9 @@ private fun FieldPreview() {
                     state = Game.FieldState.Open,
                     mine = false,
                     grassColor = GreenLight,
-                    dirtColor = BrownLight
+                    dirtColor = BrownLight,
+                    onClick = {},
+                    onLongClick = {}
                 )
             }
             Column(
@@ -128,7 +147,9 @@ private fun FieldPreview() {
                     state = Game.FieldState.Flag,
                     mine = false,
                     grassColor = Green,
-                    dirtColor = Brown
+                    dirtColor = Brown,
+                    onClick = {},
+                    onLongClick = {}
                 )
             }
             Column(
@@ -138,7 +159,9 @@ private fun FieldPreview() {
                     state = Game.FieldState.Flag,
                     mine = false,
                     grassColor = GreenLight,
-                    dirtColor = BrownLight
+                    dirtColor = BrownLight,
+                    onClick = {},
+                    onLongClick = {}
                 )
             }
         }
@@ -150,7 +173,9 @@ private fun FieldPreview() {
                     state = Game.FieldState.Close,
                     mine = true,
                     grassColor = Green,
-                    dirtColor = Brown
+                    dirtColor = Brown,
+                    onClick = {},
+                    onLongClick = {}
                 )
             }
             Column(
@@ -160,7 +185,9 @@ private fun FieldPreview() {
                     state = Game.FieldState.Close,
                     mine = true,
                     grassColor = GreenLight,
-                    dirtColor = BrownLight
+                    dirtColor = BrownLight,
+                    onClick = {},
+                    onLongClick = {}
                 )
             }
             Column(
@@ -170,7 +197,9 @@ private fun FieldPreview() {
                     state = Game.FieldState.Open,
                     mine = true,
                     grassColor = Green,
-                    dirtColor = Brown
+                    dirtColor = Brown,
+                    onClick = {},
+                    onLongClick = {}
                 )
             }
             Column(
@@ -180,7 +209,9 @@ private fun FieldPreview() {
                     state = Game.FieldState.Open,
                     mine = true,
                     grassColor = GreenLight,
-                    dirtColor = BrownLight
+                    dirtColor = BrownLight,
+                    onClick = {},
+                    onLongClick = {}
                 )
             }
             Column(
@@ -190,7 +221,9 @@ private fun FieldPreview() {
                     state = Game.FieldState.Flag,
                     mine = true,
                     grassColor = Green,
-                    dirtColor = Brown
+                    dirtColor = Brown,
+                    onClick = {},
+                    onLongClick = {}
                 )
             }
             Column(
@@ -200,7 +233,9 @@ private fun FieldPreview() {
                     state = Game.FieldState.Flag,
                     mine = true,
                     grassColor = GreenLight,
-                    dirtColor = BrownLight
+                    dirtColor = BrownLight,
+                    onClick = {},
+                    onLongClick = {}
                 )
             }
         }

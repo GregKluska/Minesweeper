@@ -8,17 +8,13 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.Button
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import com.gregkluska.minesweeper.components.Board
 import com.gregkluska.minesweeper.components.BoardItem
 import com.gregkluska.minesweeper.components.Field
-import com.gregkluska.minesweeper.ui.theme.MinesweeperTheme
+import com.gregkluska.minesweeper.components.TopBar
 
 class MainActivity : ComponentActivity() {
 
@@ -31,12 +27,15 @@ class MainActivity : ComponentActivity() {
             val gameState = viewModel.gameState.collectAsState()
 
             Column() {
-                Row(
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Button(onClick = { viewModel.dispatch(Event.Start) }) { Text("Start") }
-                    Button(onClick = { viewModel.dispatch(Event.Reset) }) { Text("Reset") }
-                }
+                TopBar(
+                    remainingFlags = 5, onReset = {}
+                )
+//                Row(
+//                    modifier = Modifier.fillMaxWidth()
+//                ) {
+//                    Button(onClick = { viewModel.dispatch(Event.Start) }) { Text("Start") }
+//                    Button(onClick = { viewModel.dispatch(Event.Reset) }) { Text("Reset") }
+//                }
 
                 val fields: MutableList<BoardItem> = mutableListOf()
 
@@ -48,7 +47,12 @@ class MainActivity : ComponentActivity() {
                                 state = field.state,
                                 mine = field.mine,
                                 number = field.adjacentMines,
-                                onClick = { viewModel.dispatch(Event.Click(field.x, field.y)) }
+                                onClick = {
+                                    viewModel.dispatch(Event.Click(field.x, field.y))
+                                },
+                                onLongClick = {
+                                    viewModel.dispatch(Event.LongClick(field.x, field.y))
+                                }
                             )
                         })
                     }

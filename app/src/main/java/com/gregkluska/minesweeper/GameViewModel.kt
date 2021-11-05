@@ -26,8 +26,6 @@ class GameViewModel : ViewModel() {
             Event.Welcome -> onWelcome()
             Event.Start -> onStart()
             Event.Reset -> onReset()
-            Event.Pause -> onPause()
-            Event.Resume -> onResume()
             Event.GameOver -> onGameOver()
             is Event.OptionsUpdate -> onOptionsUpdate(event.options)
             is Event.Click -> onClick(event.x, event.y)
@@ -64,7 +62,7 @@ class GameViewModel : ViewModel() {
         val currState = game.fields[y][x].state
         if(currState == Game.FieldState.Open) return
 
-        val nextState = if(currState == Game.FieldState.Open) Game.FieldState.Flag else Game.FieldState.Open
+        val nextState = if(currState == Game.FieldState.Close) Game.FieldState.Flag else Game.FieldState.Close
 
         val fields = game._fields
         fields[y][x] = fields[y][x].copy(state = nextState)
@@ -92,22 +90,6 @@ class GameViewModel : ViewModel() {
     private fun onReset() {
         Log.d(TAG, "onReset: called")
         dispatchState(Game(options = game.options))
-    }
-
-    private fun onPause() {
-        Log.d(TAG, "onPause: called")
-        // Todo: State check. onPause can be called on running game only
-        if (game.state == Game.State.Running) {
-            dispatchState(game.copy(state = Game.State.Paused))
-        }
-    }
-
-    private fun onResume() {
-        Log.d(TAG, "onResume: called")
-        // Todo: State check. onResume can be called on paused game only
-        if(game.state == Game.State.Paused) {
-            dispatchState(game.copy(state = Game.State.Running))
-        }
     }
 
     private fun onGameOver() {

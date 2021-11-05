@@ -1,7 +1,6 @@
 package com.gregkluska.minesweeper
 
 import android.util.Log
-import java.lang.Exception
 import kotlin.random.Random
 import kotlin.random.nextInt
 
@@ -21,7 +20,7 @@ data class Game(
 
         val mines = randomMines(options = options)
 
-        if(fields.isEmpty()) {
+        if (fields.isEmpty()) {
             // Generate fields
             fields = MutableList(options.rows) { row ->
                 MutableList(options.columns) { col ->
@@ -63,8 +62,12 @@ data class Game(
         return fields
     }
 
-    private fun openField(x: Int, y: Int, fields: MutableList<MutableList<Field>>) {
-        if (fields[y][x].state == FieldState.Close) {
+    private fun openField(
+        x: Int,
+        y: Int,
+        fields: MutableList<MutableList<Field>>
+    ) {
+        if ((fields[y][x].state == FieldState.Close) || (fields[y][x].state == FieldState.Flag)) {
             // Only do anything if the field is closed
 
             fields[y][x] = fields[y][x].copy(state = FieldState.Open)
@@ -76,14 +79,14 @@ data class Game(
                 if (fields[y][x].adjacentMines == 0) {
                     // If the field is empty (0 fields around)
                     // Open all fields around
-                    getFieldOrNull(x-1, y-1)?.let { openField(it.x, it.y, fields) }
-                    getFieldOrNull(x, y-1)?.let { openField(it.x, it.y, fields) }
-                    getFieldOrNull(x+1, y-1)?.let { openField(it.x, it.y, fields) }
-                    getFieldOrNull(x-1, y)?.let { openField(it.x, it.y, fields) }
-                    getFieldOrNull(x+1, y)?.let { openField(it.x, it.y, fields) }
-                    getFieldOrNull(x-1, y+1)?.let { openField(it.x, it.y, fields) }
-                    getFieldOrNull(x, y+1)?.let { openField(it.x, it.y, fields) }
-                    getFieldOrNull(x+1, y+1)?.let { openField(it.x, it.y, fields) }
+                    getFieldOrNull(x - 1, y - 1)?.let { openField(it.x, it.y, fields) }
+                    getFieldOrNull(x, y - 1)?.let { openField(it.x, it.y, fields) }
+                    getFieldOrNull(x + 1, y - 1)?.let { openField(it.x, it.y, fields) }
+                    getFieldOrNull(x - 1, y)?.let { openField(it.x, it.y, fields) }
+                    getFieldOrNull(x + 1, y)?.let { openField(it.x, it.y, fields) }
+                    getFieldOrNull(x - 1, y + 1)?.let { openField(it.x, it.y, fields) }
+                    getFieldOrNull(x, y + 1)?.let { openField(it.x, it.y, fields) }
+                    getFieldOrNull(x + 1, y + 1)?.let { openField(it.x, it.y, fields) }
                 }
             }
         }
@@ -97,14 +100,14 @@ data class Game(
     private fun getAdjacentMines(x: Int, y: Int): Int {
         var count = 0
 
-        getFieldOrNull(x-1, y-1)?.let { if(it.mine) count += 1 }
-        getFieldOrNull(x, y-1)?.let { if(it.mine) count += 1 }
-        getFieldOrNull(x+1, y-1)?.let { if(it.mine) count += 1 }
-        getFieldOrNull(x-1, y)?.let { if(it.mine) count += 1 }
-        getFieldOrNull(x+1, y)?.let { if(it.mine) count += 1 }
-        getFieldOrNull(x-1, y+1)?.let { if(it.mine) count += 1 }
-        getFieldOrNull(x, y+1)?.let { if(it.mine) count += 1 }
-        getFieldOrNull(x+1, y+1)?.let { if(it.mine) count += 1 }
+        getFieldOrNull(x - 1, y - 1)?.let { if (it.mine) count += 1 }
+        getFieldOrNull(x, y - 1)?.let { if (it.mine) count += 1 }
+        getFieldOrNull(x + 1, y - 1)?.let { if (it.mine) count += 1 }
+        getFieldOrNull(x - 1, y)?.let { if (it.mine) count += 1 }
+        getFieldOrNull(x + 1, y)?.let { if (it.mine) count += 1 }
+        getFieldOrNull(x - 1, y + 1)?.let { if (it.mine) count += 1 }
+        getFieldOrNull(x, y + 1)?.let { if (it.mine) count += 1 }
+        getFieldOrNull(x + 1, y + 1)?.let { if (it.mine) count += 1 }
 
         return count
     }
@@ -146,12 +149,12 @@ data class Game(
 
     enum class FieldState { Open, Close, Flag }
 
-    enum class State { Welcome, Running, Paused, GameOver }
+    enum class State { Welcome, Running, Win, GameOver }
 }
 
 data class Options(
     val rows: Int = 10,
-    val columns: Int = 10,
+    val columns: Int = 8,
     val mines: Int = 10
 ) {
     init {
