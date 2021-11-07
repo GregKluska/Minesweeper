@@ -1,12 +1,12 @@
 package com.gregkluska.minesweeper.components
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -64,15 +64,24 @@ private fun Field(
         Game.FieldState.Close -> grassColor
         Game.FieldState.Flag -> grassColor
     }
-
     Surface(
         modifier = Modifier
             .fillMaxSize()
-            .combinedClickable(
-                onClick = onClick,
-                onLongClick = onLongClick,
-                onDoubleClick = onLongClick
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() },
+                onClick = onClick
             ),
+        // Note: This causes a delay.
+        //      I'll add an indicator where a user
+        //      can choose if they want to peek or flag the field
+//            .combinedClickable(
+//                onClick = onClick,
+//                onLongClick = onLongClick,
+//                onDoubleClick = onLongClick,
+//                indication = null,
+//                interactionSource = remember { MutableInteractionSource() }
+//            ),
         color = color
     ) {
         if (state == Game.FieldState.Flag) {

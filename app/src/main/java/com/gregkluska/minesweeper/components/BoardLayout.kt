@@ -3,6 +3,7 @@ package com.gregkluska.minesweeper.components
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.SubcomposeLayout
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Constraints
@@ -26,15 +27,18 @@ data class BoardItem(
 
 @Composable
 fun Board(
+    modifier: Modifier = Modifier,
     options: Options = Options(),
     fields: List<BoardItem>
 ) {
 
-    SubcomposeLayout { constraints ->
+    SubcomposeLayout(
+        modifier = modifier
+    ) { constraints ->
         val layoutWidth = constraints.maxWidth
-        val layoutHeight = constraints.maxHeight
 
         val columnWidth = layoutWidth / options.columns
+        val layoutHeight = columnWidth * options.rows
 
         /**
          * Constraints to force them to be squares

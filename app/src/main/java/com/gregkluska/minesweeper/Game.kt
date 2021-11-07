@@ -153,9 +153,9 @@ data class Game(
 }
 
 data class Options(
-    val rows: Int = 10,
-    val columns: Int = 8,
-    val mines: Int = 10
+    val rows: Int = 30,
+    val columns: Int = 20,
+    val mines: Int = 1
 ) {
     init {
         if (rows < 1) throw IllegalArgumentException("Rows cannot be less than 1")
